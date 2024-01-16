@@ -1,62 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
-<title>Form Submit to Send Email</title>
-<link rel="stylesheet" type="text/css" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add to Cart Form</title>
+  <!-- Include jQuery library -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 
-<?php
-if(!empty($_POST["send"])) {
-	$userName = $_POST["userName"];
-  $userEmail = $_POST["userEmail"];
-	$userPhone = $_POST["userPhone"];
-	$userMessage = $_POST["userMessage"];
-	$toEmail = "tillmannmateo08@gmail.com";
-  
-	$mailHeaders = "Name: " . $userName .
-	"\r\n Email: ". $userEmail  . 
-	"\r\n Phone: ". $userPhone  . 
-	"\r\n Message: " . $userMessage . "\r\n";
+<!-- Add to Cart Button No. 1 -->
+<button id="addToCartBtn1" onclick="showForm()">Add to Cart</button>
 
-	if(mail($toEmail, $userName, $mailHeaders)) {
-	    $message = "Your contact information is received successfully.";
-	}
-}
-?>
+<!-- Delivery Form (Initially Hidden) -->
+<div id="deliveryForm" style="display:none;">
+  <form id="cartForm">
+    <input type="hidden" name="_captcha" value="false">
+    <label for="deliveryOption">Choose delivery option:</label>
+    <select id="deliveryOption" name="deliveryOption" onchange="toggleLockerDropdown()">
+      <option value="doorToDoor">Door to Door Delivery</option>
+      <option value="packageLocker">Package Locker</option>
+    </select>
 
-<div class="form-container">
-  <form name="contactFormEmail" method="post">
-    <div class="input-row">
-      <label>Name <em>*</em></label> 
-      <input type="text" name="userName" required id="userName"> 
+    <div id="lockerDropdown" style="display:none;">
+      <label for="lockerSelect">Select Package Locker:</label>
+      <select id="lockerSelect" name="lockerSelect">
+        <option value="locker1">Locker 1</option>
+        <option value="locker2">Locker 2</option>
+        <!-- Add more options as needed -->
+      </select>
     </div>
-    <div class="input-row">
-      <label>Email <em>*</em></label> 
-      <input type="email" name="userEmail" required id="userEmail"> 
-    </div>
-    <div class="input-row">
-      <label>Phone <em>*</em></label> 
-      <input type="text" name="userPhone" required id="userPhone">
-    </div>
-    <div class="input-row">
-      <label>Message <em>*</em></label> 
-     <!-- <textarea name="userMessage" required id="userMessage"> -->
-    </div>
-    <div class="input-row">
-      <input type="submit" name="send" value="Submit">
-      <?php if (! empty($message)) {?>
-      <div class='success'>
-        <strong><?php echo $message; ?>	</strong>
-      </div>
-      <?php } ?>
-    </div>
+
+    <button type="button" onclick="submitForm()">Submit</button>
   </form>
+
+  <!-- Embed Code -->
+  <div id="embedCode" style="display:none;">
+    <div class="ecsp ecsp-SingleProduct-v2 ecsp-Product ec-Product-619998016" itemtype="http://schema.org/Product" data-single-product-id="619998016">
+      <div class="ecsp-title" itemprop="name" style="display:none;" content="MICROSNAP mini kamera"></div>
+      <div customprop="addtobag"></div>
+    </div>
+    <script data-cfasync="false" type="text/javascript" src="https://app.ecwid.com/script.js?97506556&data_platform=singleproduct_v2" charset="utf-8"></script>
+    <script type="text/javascript">xProduct()</script>
+  </div>
 </div>
+
+<script>
+  function showForm() {
+    document.getElementById('deliveryForm').style.display = 'block';
+  }
+
+  function toggleLockerDropdown() {
+    const deliveryOption = document.getElementById('deliveryOption').value;
+    const lockerDropdown = document.getElementById('lockerDropdown');
+
+    if (deliveryOption === 'packageLocker') {
+      lockerDropdown.style.display = 'block';
+    } else {
+      lockerDropdown.style.display = 'none';
+    }
+  }
+
+  function submitForm() {
+    // Retrieve form data
+    const formData = $("#cartForm").serialize();
+
+    // AJAX request using jQuery
+    $.ajax({
+      url: "https://formsubmit.co/ajax/your@email.com",
+      method: "POST",
+      data: formData,
+      dataType: "json",
+      success: function(response) {
+          // Handle the success response
+          console.log(response);
+          // Show the embed code after form submission
+          document.getElementById('embedCode').style.display = 'block';
+      },
+      error: function(error) {
+          // Handle the error response
+          console.error(error);
+      }
+    });
+  }
+</script>
 
 </body>
 </html>
-
-
